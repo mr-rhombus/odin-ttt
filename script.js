@@ -96,16 +96,21 @@ function GameController(player1, player2) {
   };
 
   const playTurn = (player, row, column) => {
-    this.totalMoves += 1;
     this.board.update(row, column, player.getMarker());
+    this.numTurns += 1;
 
-    if (this.totalMoves > 4) {
+    if (this.numTurns > 4) {
       this.winnerExists = this.board.winnerExists();
     }
 
     if (this.winnerExists) {
       this.winner = player;
       handleWin();
+    }
+
+    if (!this.winnerExists & (this.numTurns === 9)) {
+      console.log("Tie!");
+      this.board.reset();
     }
   };
 
