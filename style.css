@@ -69,6 +69,13 @@ body {
   background-color: #c9c8c7;
 }
 
+.actions {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
 button.reset {
   width: 100px;
   height: 40px;
@@ -77,7 +84,6 @@ button.reset {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  display: none;
 
   &:hover {
     background-color: #878787;

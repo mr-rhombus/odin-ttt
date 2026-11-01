@@ -148,6 +148,7 @@ function GameController() {
 function DisplayController() {
   this.gameController = GameController();
   const playerCards = document.querySelectorAll(".player-card");
+  const actions = document.querySelector(".actions");
   const resetBtn = document.querySelector(".reset");
 
   const _updateScoreboard = () => {
@@ -173,8 +174,9 @@ function DisplayController() {
     event.target.textContent = whoseTurn.getMarker();
 
     if (this.gameController.winnerExists()) {
-      console.log(this.gameController.getWinner().getName() + " wins!");
-      resetBtn.style.display = "block";
+      actions.querySelector(".game-over").textContent =
+        "🎉 " + this.gameController.getWinner().getName() + " wins! 🎉";
+      actions.style.display = "flex";
       cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
     }
   };
@@ -183,6 +185,7 @@ function DisplayController() {
     this.gameController.reset();
     cells.forEach((cell) => (cell.textContent = ""));
     cells.forEach((cell) => cell.addEventListener("click", _handleClick));
+    actions.style.display = "none";
     _updateScoreboard();
   };
 
