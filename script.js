@@ -67,37 +67,38 @@ function Board() {
   return { update, winnerExists, reset };
 }
 
-function GameController(player1, player2) {
-  this.player1 = player1;
-  this.player2 = player2;
+function GameController() {
+  this.player1 = new Player("Player 1");
+  this.player2 = new Player("Player 2");
+  this.player1.setMarker("X");
+  this.player2.setMarker("O");
+
   this.board = Board();
-  this.totalMoves = 0;
+  this.numTurns = 0;
+  this._whoseTurn;
   this.winnerExists = false;
   this.winner;
 
   const whoseTurn = () => {
-    const p1CanMakeMove = this.player1.getCanMakeMove();
-    const p2CanMakeMove = this.player2.getCanMakeMove();
-
     // First turn
-    if (!p1CanMakeMove & !p2CanMakeMove) {
-      Math.random < 0.5
-        ? this.player1.toggleCanMakeMove()
-        : this.player2.toggleCanMakeMove();
+    if (this.numTurns === 0) {
+      Math.random() < 0.5
+        ? (this._whoseTurn = this.player1)
+        : (this._whoseTurn = this.player2);
     }
+    console.log(this._whoseTurn.getName() + "'s turn");
+    return this._whoseTurn;
+  };
 
-    if (p1CanMakeMove) {
-      return this.player1;
-    }
-
-    if (p2CanMakeMove) {
-      return this.player2;
-    }
+  const _toggleTurn = () => {
+    this._whoseTurn =
+      this._whoseTurn === this.player1 ? this.player2 : this.player1;
   };
 
   const playTurn = (player, row, column) => {
     this.board.update(row, column, player.getMarker());
     this.numTurns += 1;
+    _toggleTurn();
 
     if (this.numTurns > 4) {
       this.winnerExists = this.board.winnerExists();
@@ -126,3 +127,24 @@ function GameController(player1, player2) {
 
   return { playTurn, whoseTurn, checkBoard };
 }
+
+function DisplayController() {
+  this.gameController = GameController();
+  this.cells = document.querySelectorAll(".cell");
+  this.cells.forEach((cell) =>
+    cell.addEventListener("click", () => {
+      if (cell.textContent) {
+        return;
+      }
+      const whoseTurn = this.gameController.whoseTurn();
+      this.gameController.playTurn(
+        whoseTurn,
+        cell.dataset.row,
+        cell.dataset.col,
+      );
+      cell.textContent = whoseTurn.getMarker();
+    }),
+  );
+}
+
+DisplayController();
