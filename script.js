@@ -89,13 +89,11 @@ function GameController() {
   };
 
   const whoseTurn = () => {
-    // First turn
-    if (this.numTurns === 0) {
+    if (!this._whoseTurn) {
       Math.random() < 0.5
         ? (this._whoseTurn = this.player1)
         : (this._whoseTurn = this.player2);
     }
-    console.log(this._whoseTurn.getName() + "'s turn");
     return this._whoseTurn;
   };
 
@@ -151,13 +149,39 @@ function DisplayController() {
   const actions = document.querySelector(".actions");
   const resetBtn = document.querySelector(".reset");
 
+  const _toggleTurnStyling = () => {
+    playerCards.forEach((card) => {
+      card.querySelector(".player-marker").classList.toggle("can-move");
+      card.querySelector(".player-name").classList.toggle("can-move");
+    });
+  };
+
+  const _highlightWinCondition = () => {
+    cells.forEach((cell) => {
+      if (cell.textContent === this.gameController.getWinner().getMarker()) {
+        cell.classList.toggle("winning-cell");
+      }
+    });
+  };
+
   const _updateScoreboard = () => {
     const players = this.gameController.getPlayers();
     players.forEach((player, i) => {
       const card = playerCards[i];
-      card.querySelector(".player-marker").textContent = player.getMarker();
-      card.querySelector(".player-name").textContent = player.getName();
+      card.dataset.playerName = player.getName();
+      const markerEl = card.querySelector(".player-marker");
+      markerEl.textContent = player.getMarker();
+      const nameEl = card.querySelector(".player-name");
+      nameEl.textContent = player.getName();
       card.querySelector(".win-cnt").textContent = player.getWins();
+      // Styling to indicate who moves first
+      if (this.gameController.whoseTurn() === player) {
+        markerEl.classList.add("can-move");
+        nameEl.classList.add("can-move");
+      } else {
+        markerEl.classList.remove("can-move");
+        nameEl.classList.remove("can-move");
+      }
     });
   };
 
@@ -174,10 +198,13 @@ function DisplayController() {
     event.target.textContent = whoseTurn.getMarker();
 
     if (this.gameController.winnerExists()) {
+      _highlightWinCondition();
       actions.querySelector(".game-over").textContent =
         "🎉 " + this.gameController.getWinner().getName() + " wins! 🎉";
       actions.style.display = "flex";
       cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
+    } else {
+      _toggleTurnStyling();
     }
   };
 

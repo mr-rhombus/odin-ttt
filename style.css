@@ -19,6 +19,10 @@ body {
   padding: 5px 15px;
 }
 
+.can-move {
+  color: #2e6f40;
+}
+
 .player-card {
   display: flex;
   align-items: center;
@@ -89,4 +93,9 @@ button.reset {
     background-color: #878787;
     color: #f2f0ef;
   }
+}
+
+.winning-cell {
+  color: #2e6f40;
+  font-weight: 500;
 }
