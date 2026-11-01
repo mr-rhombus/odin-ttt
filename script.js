@@ -115,10 +115,6 @@ function GameController() {
       this.winner = player;
       handleWin();
     }
-
-    if (!this._winnerExists & (this.numTurns === 9)) {
-      console.log("Tie!");
-    }
   };
 
   const handleWin = () => {
@@ -140,7 +136,23 @@ function GameController() {
     return this.winner;
   };
 
-  return { getPlayers, playTurn, whoseTurn, winnerExists, getWinner, reset };
+  const _gameIsTied = () => {
+    return !this._winnerExists & (this.numTurns === 9);
+  };
+
+  const gameIsOver = () => {
+    return _gameIsTied() || winnerExists();
+  };
+
+  return {
+    getPlayers,
+    playTurn,
+    whoseTurn,
+    winnerExists,
+    getWinner,
+    gameIsOver,
+    reset,
+  };
 }
 
 function DisplayController() {
@@ -197,21 +209,28 @@ function DisplayController() {
     );
     event.target.textContent = whoseTurn.getMarker();
 
+    this.gameController.gameIsOver() ? _handleEndGame() : _toggleTurnStyling();
+  };
+
+  const _handleEndGame = () => {
+    actions.style.display = "flex";
+    cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
     if (this.gameController.winnerExists()) {
       _highlightWinCondition();
       actions.querySelector(".game-over").textContent =
         "🎉 " + this.gameController.getWinner().getName() + " wins! 🎉";
-      actions.style.display = "flex";
-      cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
     } else {
-      _toggleTurnStyling();
+      actions.querySelector(".game-over").textContent = "Tie game, try again!";
     }
   };
 
   const _reset = (e) => {
     this.gameController.reset();
-    cells.forEach((cell) => (cell.textContent = ""));
-    cells.forEach((cell) => cell.addEventListener("click", _handleClick));
+    cells.forEach((cell) => {
+      cell.textContent = "";
+      cell.classList.remove("winning-cell");
+      cell.addEventListener("click", _handleClick);
+    });
     actions.style.display = "none";
     _updateScoreboard();
   };
