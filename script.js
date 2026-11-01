@@ -126,6 +126,7 @@ function GameController() {
     this.numTurns = 0;
     this.winner = undefined;
     this._winnerExists = false;
+    this._whoseTurn = undefined;
   };
 
   const winnerExists = () => {
