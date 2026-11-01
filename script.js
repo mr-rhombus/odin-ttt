@@ -81,7 +81,7 @@ function GameController() {
   this.board = Board();
   this.numTurns = 0;
   this._whoseTurn;
-  this._winnerExists = false;
+  this._winnerExists = this.board.winnerExists();
   this.winner;
 
   const whoseTurn = () => {
@@ -116,24 +116,29 @@ function GameController() {
 
     if (!this._winnerExists & (this.numTurns === 9)) {
       console.log("Tie!");
-      this.board.reset();
     }
   };
 
   const handleWin = () => {
     this.winner.addWin();
+  };
+
+  const reset = () => {
     this.board.reset();
+    this.numTurns = 0;
+    this.winner = undefined;
+    this._winnerExists = false;
   };
 
   const winnerExists = () => {
-    return this.board.winnerExists();
+    return this._winnerExists;
   };
 
   const getWinner = () => {
     return this.winner;
   };
 
-  return { playTurn, whoseTurn, winnerExists, getWinner };
+  return { playTurn, whoseTurn, winnerExists, getWinner, reset };
 }
 
 function DisplayController() {
@@ -152,8 +157,9 @@ function DisplayController() {
     event.target.textContent = whoseTurn.getMarker();
 
     if (this.gameController.winnerExists()) {
-      cells.forEach((cell) => (cell.textContent = ""));
       console.log(this.gameController.getWinner().getName() + " wins!");
+      this.gameController.reset(); // TODO: add reset btn
+      cells.forEach((cell) => (cell.textContent = ""));
     }
   };
 
