@@ -31,29 +31,34 @@ function Board() {
     [, , ,],
   ];
 
-  this._possibleWinArrs = [
-    // Diagonals
-    [this._state[0][0], this._state[1][1], this._state[2][2]],
-    [this._state[0][2], this._state[1][1], this._state[2][0]],
-  ];
-  this._state.forEach((n) => {
-    // Row
-    this._possibleWinArrs.push(this._state[n]);
+  this._getPossibleWinArrs = () => {
+    const possibleWinArrs = [
+      // Diagonals
+      [this._state[0][0], this._state[1][1], this._state[2][2]],
+      [this._state[0][2], this._state[1][1], this._state[2][0]],
+    ];
+    this._state.forEach((_, n) => {
+      // Row
+      possibleWinArrs.push(this._state[n]);
 
-    // Column
-    this._possibleWinArrs.push(this._state.map((row) => row[n]));
-  });
+      // Column
+      possibleWinArrs.push(this._state.map((row) => row[n]));
+    });
+
+    return possibleWinArrs;
+  };
 
   const update = (row, col, marker) => {
     this._state[row][col] = marker;
   };
 
   const winnerExists = () => {
-    return this._possibleWinArrs.some((arr) => _allValsEqual(arr));
+    const possibleWinArrs = this._getPossibleWinArrs();
+    return possibleWinArrs.some((arr) => _allValsEqual(arr));
   };
 
   const _allValsEqual = (arr) => {
-    return arr.every((val) => val == arr[0]);
+    return arr.every((val) => val == arr[0] && val);
   };
 
   const reset = () => {
