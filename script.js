@@ -26,9 +26,9 @@ function Player(name) {
 
 function Board() {
   this._state = [
-    [, , ,],
-    [, , ,],
-    [, , ,],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
   ];
 
   this._getPossibleWinArrs = () => {
