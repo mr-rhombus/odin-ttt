@@ -175,12 +175,14 @@ function DisplayController() {
     if (this.gameController.winnerExists()) {
       console.log(this.gameController.getWinner().getName() + " wins!");
       resetBtn.style.display = "block";
+      cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
     }
   };
 
   const _reset = (e) => {
     this.gameController.reset();
     cells.forEach((cell) => (cell.textContent = ""));
+    cells.forEach((cell) => cell.addEventListener("click", _handleClick));
     _updateScoreboard();
   };
 
