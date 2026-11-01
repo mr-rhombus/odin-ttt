@@ -143,6 +143,7 @@ function GameController() {
 
 function DisplayController() {
   this.gameController = GameController();
+  const resetBtn = document.querySelector(".reset");
 
   const _handleClick = (event) => {
     if (event.target.textContent) {
@@ -158,13 +159,19 @@ function DisplayController() {
 
     if (this.gameController.winnerExists()) {
       console.log(this.gameController.getWinner().getName() + " wins!");
-      this.gameController.reset(); // TODO: add reset btn
-      cells.forEach((cell) => (cell.textContent = ""));
+      resetBtn.style.display = "block";
     }
+  };
+
+  const _reset = (e) => {
+    this.gameController.reset();
+    cells.forEach((cell) => (cell.textContent = ""));
   };
 
   const cells = document.querySelectorAll(".cell");
   cells.forEach((cell) => cell.addEventListener("click", _handleClick));
+
+  resetBtn.addEventListener("click", _reset);
 }
 
 DisplayController();
