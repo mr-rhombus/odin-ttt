@@ -81,7 +81,7 @@ function GameController() {
   this.board = Board();
   this.numTurns = 0;
   this._whoseTurn;
-  this.winnerExists = false;
+  this._winnerExists = false;
   this.winner;
 
   const whoseTurn = () => {
@@ -106,15 +106,15 @@ function GameController() {
     _toggleTurn();
 
     if (this.numTurns > 4) {
-      this.winnerExists = this.board.winnerExists();
+      this._winnerExists = this.board.winnerExists();
     }
 
-    if (this.winnerExists) {
+    if (this._winnerExists) {
       this.winner = player;
       handleWin();
     }
 
-    if (!this.winnerExists & (this.numTurns === 9)) {
+    if (!this._winnerExists & (this.numTurns === 9)) {
       console.log("Tie!");
       this.board.reset();
     }
@@ -122,34 +122,43 @@ function GameController() {
 
   const handleWin = () => {
     this.winner.addWin();
-    console.log(this.winner.getName() + " wins!");
     this.board.reset();
   };
 
-  const checkBoard = () => {
-    return this._state;
+  const winnerExists = () => {
+    return this.board.winnerExists();
   };
 
-  return { playTurn, whoseTurn, checkBoard };
+  const getWinner = () => {
+    return this.winner;
+  };
+
+  return { playTurn, whoseTurn, winnerExists, getWinner };
 }
 
 function DisplayController() {
   this.gameController = GameController();
-  this.cells = document.querySelectorAll(".cell");
-  this.cells.forEach((cell) =>
-    cell.addEventListener("click", () => {
-      if (cell.textContent) {
-        return;
-      }
-      const whoseTurn = this.gameController.whoseTurn();
-      this.gameController.playTurn(
-        whoseTurn,
-        cell.dataset.row,
-        cell.dataset.col,
-      );
-      cell.textContent = whoseTurn.getMarker();
-    }),
-  );
+
+  const _handleClick = (event) => {
+    if (event.target.textContent) {
+      return;
+    }
+    const whoseTurn = this.gameController.whoseTurn();
+    this.gameController.playTurn(
+      whoseTurn,
+      event.target.dataset.row,
+      event.target.dataset.col,
+    );
+    event.target.textContent = whoseTurn.getMarker();
+
+    if (this.gameController.winnerExists()) {
+      cells.forEach((cell) => (cell.textContent = ""));
+      console.log(this.gameController.getWinner().getName() + " wins!");
+    }
+  };
+
+  const cells = document.querySelectorAll(".cell");
+  cells.forEach((cell) => cell.addEventListener("click", _handleClick));
 }
 
 DisplayController();
