@@ -168,14 +168,6 @@ function DisplayController() {
     });
   };
 
-  const _highlightWinCondition = () => {
-    cells.forEach((cell) => {
-      if (cell.textContent === this.gameController.getWinner().getMarker()) {
-        cell.classList.toggle("winning-cell");
-      }
-    });
-  };
-
   const _updateScoreboard = () => {
     const players = this.gameController.getPlayers();
     players.forEach((player, i) => {
@@ -216,7 +208,6 @@ function DisplayController() {
     actions.style.display = "flex";
     cells.forEach((cell) => cell.removeEventListener("click", _handleClick));
     if (this.gameController.winnerExists()) {
-      _highlightWinCondition();
       actions.querySelector(".game-over").textContent =
         "🎉 " + this.gameController.getWinner().getName() + " wins! 🎉";
     } else {
@@ -228,7 +219,6 @@ function DisplayController() {
     this.gameController.reset();
     cells.forEach((cell) => {
       cell.textContent = "";
-      cell.classList.remove("winning-cell");
       cell.addEventListener("click", _handleClick);
     });
     actions.style.display = "none";
