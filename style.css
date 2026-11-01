@@ -12,9 +12,39 @@ body {
 }
 
 .scoreboard {
-  width: 300px;
-  height: 120px;
   border: 2px solid black;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  padding: 5px 15px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-marker {
+  font-size: 64px;
+  font-weight: 300;
+}
+
+.player-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.player-name {
+  font-size: 25px;
+}
+
+.player-wins {
+  font-size: 14px;
+  color: #949392;
+  display: flex;
+  gap: 3px;
 }
 
 .board {
