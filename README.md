@@ -24,6 +24,34 @@ In the interest of getting more comfortable integrating AI into my development w
 ### Agentic Game Review
 **Prompt**
 ```
-
+build a tic tac toe game in the odin-ttt/agent-game directory according to the following instructions: https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe
 ```
-**Model**: 
+**Model**: Claude Opus 5.5
+
+#### Reflection
+- `index.html`
+  - Very simple with a single form to collect player name inputs and a div representing the board
+- `style.css`
+  - Nice dark theming with purple accents
+  - Spacing and fonts often use `rem` but occasionally use `px`
+- `script.js`
+  - `GameBoard`
+    - Single array with 9 elements (instantiated using the `Array` object)
+    - Handles mark placement validation
+    - Exposes its state, allows for mark placement, and allows for resetting -- very simple and to the point
+  - `createPlayer` is a very simple factory function that returns a player object. Nothing fancy
+  - `GameController`
+    - Checks for valid win conditions
+    - Tracks active player and endgame (game over, winner, winning line, etc.)
+    - `start` func encapsulates new game logic succinctly
+    - Nifty logic to toggle active player (new active player = 1 - current active player index)
+    - Returns a state object that tracks the board, active player, and endgame information
+    - Is an IIFE, keeping internal state private, but making itself accessible to the rest of the code
+  - `DisplayController`
+    - Most work lies in the `render` func, which renders the latest state passed from the `GameController`
+      - Cells on the board are dynamically generated on each call (seems a bit wasteful?)
+      - Each cell contains a data attribute matching its index in the `Gameboard`'s `board`
+    - The entire board listens for a click then identifies the closest cell to the click and runs the `render` func accordingly
+    - The game starts once the "Start game" btn is clicked
+- I like the `GameController` <- state -> `DisplayController.render` contract -- very easy to follow that all state is passed from one to the other in one place, then rendered accordingly
+- I like how the board is treated as a single array (rather than my approach of a 3x3 array) -- this especially helps with highlighting the winning line, which is something I attempted but gave up on due to the complexity given my 3x3 array approach for the board state
